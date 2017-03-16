@@ -1,13 +1,21 @@
+
+#define filterSamples   13              // filterSamples should  be an odd number, no smaller than 3
 #include <Arduino.h>
 const int numReadings = 10;
 float average = 0;
 int readIndex = 0;
 int total = 0;
-int previousAverage =0; 
 int readings[numReadings];
-float upperBounds = 20; 
-float lowerBounds = 20; 
-bool a2touched = false;
+
+int touchReading = 0; 
+int sensSmoothArray1 [filterSamples];   // array for holding raw sensor values for sensor1 
+int sensSmoothArray2 [filterSamples];   
+int sensSmoothArray0 [filterSamples];
+
+int touch0SmoothArray0 [filterSamples]; 
+
+String touchValues;
+
 void setup() {
   Serial.begin(9600);
   for(int thisReading = 0; thisReading < numReadings; thisReading++)
@@ -17,48 +25,37 @@ void setup() {
 }
 
 void loop() {
- float value = touchRead(A2,A6);
-//subtract the last reading
- total = total - readings[readIndex];
-readings[readIndex]= value;
-//add the reading to the total
-total = total + readings[readIndex];
-//advance to the next reading
-readIndex = readIndex + 1;
 
-//if we are at the end of the array
-if(readIndex >= numReadings)
-  readIndex = 0;
+//this code will keep a running averege - currently unused 
+////subtract the last reading
+// total = total - readings[readIndex];
+//readings[readIndex]= value;
+////add the reading to the total
+//total = total + readings[readIndex];
+////advance to the next reading
+//readIndex = readIndex + 1;
+//
+////if we are at the end of the array
+//if(readIndex >= numReadings)
+//  readIndex = 0;
   
-average = total/numReadings;
+//average = total/numReadings;
 
-//this will give you 1,2 or 3 depending on which boxes are touched for box A2 
-//it will not let you know if  A2 is picked up 
-float val = map(value, 0, 1024, 0, 2); 
-Serial.println(val);   
+//this maping and smoothing function gives me values for if the boxes are
+//innerconnected in various ways 
+ float value = touchRead1(A4,A6);
+float val = map(value, 0, 1024, 0, 5); 
+int smoothData0 = digitalSmooth(val, sensSmoothArray0); 
+Serial.print(val);   
+Serial.print(","); 
 
 
-if(average > previousAverage - 50); 
-{
-  a2touched = true;
+  int touch0 = touchRead(A4); 
+  if(touch0 > 2000) touch0 = 1;
+  int touchSmooth0 = digitalSmooth(touch0, touch0SmoothArray0); 
+  Serial.println(touchSmooth0); 
 }
-//Serial.println(a2touched);
-//Serial.println(average);  
-//delay(1); 
-//Serial.println("A2 touched"); 
-
-//Serial.println(average); 
-//Serial.println("A2 touched"); 
-
-
-//Serial.println(average); 
-
-// float value2 = touchRead(A4,A6);
- 
- //Serial.println(value2); 
-// previousAverage = average; 
-}
-int touchRead(int pin1, int pin2)
+int touchRead1(int pin1, int pin2)
 {
   int sum=0;
 
@@ -88,5 +85,75 @@ int touchRead(int pin1, int pin2)
 bool inRange(int val, int minimum, int maximum)
 {
   return ((minimum <= val) && (val <= maximum));
+}
+
+int digitalSmooth(int rawIn, int *sensSmoothArray){     // "int *sensSmoothArray" passes an array to the function - the asterisk indicates the array name is a pointer
+  int j, k, temp, top, bottom;
+  long total;
+  static int i;
+ // static int raw[filterSamples];
+  static int sorted[filterSamples];
+  boolean done;
+
+  i = (i + 1) % filterSamples;    // increment counter and roll over if necc. -  % (modulo operator) rolls over variable
+  sensSmoothArray[i] = rawIn;                 // input new data into the oldest slot
+
+  // Serial.print("raw = ");
+
+  for (j=0; j<filterSamples; j++){     // transfer data array into anther array for sorting and averaging
+    sorted[j] = sensSmoothArray[j];
+  }
+
+  done = 0;                // flag to know when we're done sorting              
+  while(done != 1){        // simple swap sort, sorts numbers from lowest to highest
+    done = 1;
+    for (j = 0; j < (filterSamples - 1); j++){
+      if (sorted[j] > sorted[j + 1]){     // numbers are out of order - swap
+        temp = sorted[j + 1];
+        sorted [j+1] =  sorted[j] ;
+        sorted [j] = temp;
+        done = 0;
+      }
+    }
+  }
+
+/*
+  for (j = 0; j < (filterSamples); j++){    // print the array to debug
+    Serial.print(sorted[j]); 
+    Serial.print("   "); 
+  }
+  Serial.println();
+*/
+
+  // throw out top and bottom 15% of samples - limit to throw out at least one from top and bottom
+  bottom = max(((filterSamples * 15)  / 100), 1); 
+  top = min((((filterSamples * 85) / 100) + 1  ), (filterSamples - 1));   // the + 1 is to make up for asymmetry caused by integer rounding
+  k = 0;
+  total = 0;
+  for ( j = bottom; j< top; j++){
+    total += sorted[j];  // total remaining indices
+    k++; 
+    // Serial.print(sorted[j]); 
+    // Serial.print("   "); 
+  }
+
+//  Serial.println();
+//  Serial.print("average = ");
+//  Serial.println(total/k);
+  return total / k;    // divide by number of samples
+}
+//returns string with 1 for touched and 0 for not touched for each pin passed in
+void getTouches (int pin0, int pin1, int pin2){
+  int touch0 = touchRead(pin0); 
+  if(touch0 > 3000) touch0 = 1; 
+  delay(10); 
+  int touch1 = touchRead(pin1); 
+  if(touch1 > 3000) touch1 = 1; 
+  delay(10);
+  int touch2 = touchRead(pin2); 
+  if(touch2 > 3000) touch2 = 1; 
+  Serial.println(touch1); 
+  touchValues = String(touch0, touch1); 
+
 }
 
