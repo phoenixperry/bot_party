@@ -1,6 +1,9 @@
 
 #define filterSamples   13              // filterSamples should  be an odd number, no smaller than 3
 #include <Arduino.h>
+#define box1 A2  
+#define box2 A8 
+#define box3 A9
 const int numReadings = 10;
 float average = 0;
 int readIndex = 0;
@@ -43,18 +46,38 @@ void loop() {
 
 //this maping and smoothing function gives me values for if the boxes are
 //innerconnected in various ways 
- float value = touchRead1(A4,A6);
-float val = map(value, 0, 1024, 0, 5); 
+
+float box1_3 = touchRead1(box1,box3); 
+
+float box2_3 = touchRead1(box2,box3);
+
+//Serial.print(value);   
+//Serial.print(",");  
+//Serial.println(value2);
+  
+int val = map(box2_3, 0, 1024, 0, 5); 
+
 int smoothData0 = digitalSmooth(val, sensSmoothArray0); 
-Serial.print(val);   
-Serial.print(","); 
+Serial.println(val);   
 
+//printing the connected states out to Strings for Max
+//if(val <= 4) Serial.println("no boxes connected"); 
+//bool range = inRange(val, 5,7);
+//if(range) Serial.println("box 1 and box 2 connected");
+//if(val >= 11) Serial.println("box 2 and 3 connected");  
+//if(val == 0) Serial.print("box 1 and box 3 connected"); 
+//range = inRange(val, 8,10);
+//if(range) Serial.println("all 3 connected"); 
+// 
+//Touch data for pins 
 
-  int touch0 = touchRead(A4); 
-  if(touch0 > 2000) touch0 = 1;
+  int touch0 = touchRead(box1); 
+  
   int touchSmooth0 = digitalSmooth(touch0, touch0SmoothArray0); 
   Serial.println(touchSmooth0); 
 }
+
+
 int touchRead1(int pin1, int pin2)
 {
   int sum=0;
@@ -74,7 +97,8 @@ int touchRead1(int pin1, int pin2)
 
 
     pinMode(pin1, INPUT);
-    digitalWrite(pin1,LOW);
+ //   digitalWrite(pin1,LOW);
+
     sum = sum +high-low;  
   }
 
@@ -154,6 +178,5 @@ void getTouches (int pin0, int pin1, int pin2){
   if(touch2 > 3000) touch2 = 1; 
   Serial.println(touch1); 
   touchValues = String(touch0, touch1); 
-
 }
 
