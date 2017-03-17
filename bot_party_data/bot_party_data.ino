@@ -1,7 +1,7 @@
-
+ 
 #define filterSamples   13              // filterSamples should  be an odd number, no smaller than 3
 #include <Arduino.h>
-#define box1 A2  
+#define box1 A1  
 #define box2 A8 
 #define box3 A9
 const int numReadings = 10;
@@ -68,13 +68,13 @@ Serial.println(val);
 //if(val == 0) Serial.print("box 1 and box 3 connected"); 
 //range = inRange(val, 8,10);
 //if(range) Serial.println("all 3 connected"); 
-// 
+ 
 //Touch data for pins 
 
   int touch0 = touchRead(box1); 
   
   int touchSmooth0 = digitalSmooth(touch0, touch0SmoothArray0); 
-  Serial.println(touchSmooth0); 
+  //Serial.println(touchSmooth0); 
 }
 
 
