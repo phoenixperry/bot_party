@@ -1,9 +1,18 @@
  
 #define filterSamples   13              // filterSamples should  be an odd number, no smaller than 3
 #include <Arduino.h>
-#define box1 A1  
-#define box2 A8 
-#define box3 A9
+#define box1 A0  
+#define box2 A1 
+#define box3 A2
+
+//mpr121 
+// touch includes
+#include <MPR121.h>
+#include <Wire.h>
+#define MPR121_ADDR 0x5C
+#define MPR121_INT 4
+
+
 const int numReadings = 10;
 float average = 0;
 int readIndex = 0;
@@ -25,10 +34,26 @@ void setup() {
     {
       readings[thisReading] = 0;
     }
+      if(!MPR121.begin(MPR121_ADDR)) Serial.println("error setting up MPR121");
+  MPR121.setInterruptPin(MPR121_INT);
+   // this is the touch threshold - setting it low makes it more like a proximity trigger
+  // default value is 40 for touch
+  MPR121.setTouchThreshold(7);
+  
+  // this is the release threshold - must ALWAYS be smaller than the touch threshold
+  // default value is 20 for touch
+  MPR121.setReleaseThreshold(4);  
+
+
+    // slow down some of the MPR121 baseline filtering to avoid 
+  // filtering out slow hand movements
+  MPR121.setRegister(MPR121_NHDF, 0x01); //noise half delta (falling)
+  MPR121.setRegister(MPR121_FDLF, 0x3F); //filter delay limit (falling)   
+  
 }
 
 void loop() {
-
+readTouchInputs(); 
 //this code will keep a running averege - currently unused 
 ////subtract the last reading
 // total = total - readings[readIndex];
@@ -55,25 +80,32 @@ float box2_3 = touchRead1(box2,box3);
 //Serial.print(",");  
 //Serial.println(value2);
   
-int val = map(box2_3, 0, 1024, 0, 5); 
-
+int val = map(box1_3, 0, 1024, 0, 5); 
+//
 int smoothData0 = digitalSmooth(val, sensSmoothArray0); 
-Serial.println(val);   
-
-//printing the connected states out to Strings for Max
-//if(val <= 4) Serial.println("no boxes connected"); 
-//bool range = inRange(val, 5,7);
-//if(range) Serial.println("box 1 and box 2 connected");
-//if(val >= 11) Serial.println("box 2 and 3 connected");  
-//if(val == 0) Serial.print("box 1 and box 3 connected"); 
-//range = inRange(val, 8,10);
-//if(range) Serial.println("all 3 connected"); 
+//
+////printing the connected states out to Strings for Max
+if(val == 0) Serial.println("no boxes connected"); 
+//
+bool range = inRange(val, 2,3);
+if(range) Serial.println("box 1 and box 2 connected");
+//
+range = inRange(val, 10,11);
+if(range) Serial.print("box 1 and box 3 connected");
+//
+val = map(box2_3, 0, 1024, 0, 4);
+Serial.println(val);  
+// 
+range = inRange(val, 8,9);
+if(range) Serial.println("box 2 and 3 connected");   
+//
+//if(range==9) Serial.println("all 3 connected"); 
  
 //Touch data for pins 
 
-  int touch0 = touchRead(box1); 
+//  int touch0 = touchRead(box1); 
   
-  int touchSmooth0 = digitalSmooth(touch0, touch0SmoothArray0); 
+//  int touchSmooth0 = digitalSmooth(touch0, touch0SmoothArray0); 
   //Serial.println(touchSmooth0); 
 }
 
@@ -164,19 +196,30 @@ int digitalSmooth(int rawIn, int *sensSmoothArray){     // "int *sensSmoothArray
 //  Serial.println();
 //  Serial.print("average = ");
 //  Serial.println(total/k);
-  return total / k;    // divide by number of samples
-}
-//returns string with 1 for touched and 0 for not touched for each pin passed in
-void getTouches (int pin0, int pin1, int pin2){
-  int touch0 = touchRead(pin0); 
-  if(touch0 > 3000) touch0 = 1; 
-  delay(10); 
-  int touch1 = touchRead(pin1); 
-  if(touch1 > 3000) touch1 = 1; 
-  delay(10);
-  int touch2 = touchRead(pin2); 
-  if(touch2 > 3000) touch2 = 1; 
-  Serial.println(touch1); 
-  touchValues = String(touch0, touch1); 
-}
+//  return total / k;    // divide by number of samples
 
+}
+void readTouchInputs(){
+    
+  MPR121.updateAll();
+
+  // only make an action if we have one or fewer pins touched
+  // ignore multiple touches
+
+  for (int i=1; i < 12; i++){  // Check which electrodes were pressed
+    if(MPR121.isNewTouch(i)){
+    
+        //pin i was just touched
+        Serial.print("pin ");
+        Serial.print(i);
+        Serial.println(" was just touched");  
+    }else{
+      if(MPR121.isNewRelease(i)){
+        Serial.print("pin ");
+        Serial.print(i);
+        Serial.println(" is no longer being touched");
+        digitalWrite(LED_BUILTIN, LOW);
+     } 
+    }
+  }
+}
