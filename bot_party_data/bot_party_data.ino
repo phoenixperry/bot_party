@@ -1,17 +1,9 @@
  
 #define filterSamples   13              // filterSamples should  be an odd number, no smaller than 3
 #include <Arduino.h>
-#define box1 A0  
-#define box2 A1 
-#define box3 A2
-
-//mpr121 
-// touch includes
-#include <MPR121.h>
-#include <Wire.h>
-#define MPR121_ADDR 0x5C
-#define MPR121_INT 4
-
+#define box1 A9  
+#define box2 A8 
+#define box3 A7
 
 const int numReadings = 10;
 float average = 0;
@@ -35,47 +27,9 @@ void setup() {
     {
       readings[thisReading] = 0;
     }
-      if(!MPR121.begin(MPR121_ADDR)) Serial.println("error setting up MPR121");
-  MPR121.setInterruptPin(MPR121_INT);
-   // this is the touch threshold - setting it low makes it more like a proximity trigger
-  // default value is 40 for touch
-  MPR121.setTouchThreshold(7);
-  
-  // this is the release threshold - must ALWAYS be smaller than the touch threshold
-  // default value is 20 for touch
-  MPR121.setReleaseThreshold(4);  
-
-
-    // slow down some of the MPR121 baseline filtering to avoid 
-  // filtering out slow hand movements
-  MPR121.setRegister(MPR121_NHDF, 0x01); //noise half delta (falling)
-  MPR121.setRegister(MPR121_FDLF, 0x3F); //filter delay limit (falling)   
-  
 }
 
 void loop() {
-readTouchInputs(); 
-//this code will keep a running averege - currently unused 
-////subtract the last reading
-// total = total - readings[readIndex];
-//readings[readIndex]= value;
-////add the reading to the total
-//total = total + readings[readIndex];
-////advance to the next reading
-//readIndex = readIndex + 1;
-//
-////if we are at the end of the array
-//if(readIndex >= numReadings)
-//  readIndex = 0;
-  
-//average = total/numReadings;
-
-//this maping and smoothing function gives me values for if the boxes are
-//innerconnected in various ways 
-
-int pinCheck = analogRead(A0); 
-Serial.println(pinCheck); 
-
 float box1_3 = touchRead1(box1,box3); 
 
 float box2_3 = touchRead1(box2,box3);
@@ -97,7 +51,7 @@ if(range)
 
 //
 val = map(box2_3, 0, 1024, 0, 4);
-//Serial.println(val);  
+Serial.println(val);  
 // 
 range = inRange(val, 8,9);
 if(range) 
@@ -201,27 +155,24 @@ int digitalSmooth(int rawIn, int *sensSmoothArray){     // "int *sensSmoothArray
 //  return total / k;    // divide by number of samples
 
 }
-void readTouchInputs(){
-    
-  MPR121.updateAll();
 
-  // only make an action if we have one or fewer pins touched
-  // ignore multiple touches
+//void runningAverage(){
+//this code will keep a running averege - currently unused 
+////subtract the last reading
+// total = total - readings[readIndex];
+//readings[readIndex]= value;
+////add the reading to the total
+//total = total + readings[readIndex];
+////advance to the next reading
+//readIndex = readIndex + 1;
+//
+////if we are at the end of the array
+//if(readIndex >= numReadings)
+//  readIndex = 0;
+  
+//average = total/numReadings;
 
-  for (int i=1; i < 12; i++){  // Check which electrodes were pressed
-    if(MPR121.isNewTouch(i)){
-    
-        //pin i was just touched
-        Serial.print("pin ");
-        Serial.print(i);
-        Serial.println(" was just touched");  
-    }else{
-      if(MPR121.isNewRelease(i)){
-        Serial.print("pin ");
-        Serial.print(i);
-        Serial.println(" is no longer being touched");
-        digitalWrite(LED_BUILTIN, LOW);
-     } 
-    }
-  }
-}
+//this maping and smoothing function gives me values for if the boxes are
+//innerconnected in various ways 
+  
+//}
