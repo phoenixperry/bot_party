@@ -27,7 +27,8 @@ int sensSmoothArray0 [filterSamples];
 int touch0SmoothArray0 [filterSamples]; 
 
 String touchValues;
-
+bool boxes_1_3_connected =false;  
+bool boxes_2_3_connected = false; 
 void setup() {
   Serial.begin(9600);
   for(int thisReading = 0; thisReading < numReadings; thisReading++)
@@ -72,41 +73,42 @@ readTouchInputs();
 //this maping and smoothing function gives me values for if the boxes are
 //innerconnected in various ways 
 
+int pinCheck = analogRead(A0); 
+Serial.println(pinCheck); 
+
 float box1_3 = touchRead1(box1,box3); 
 
 float box2_3 = touchRead1(box2,box3);
-
-//Serial.print(value);   
-//Serial.print(",");  
-//Serial.println(value2);
-  
 int val = map(box1_3, 0, 1024, 0, 5); 
-//
-int smoothData0 = digitalSmooth(val, sensSmoothArray0); 
-//
-////printing the connected states out to Strings for Max
+
+//printing the connected states out to Strings for Max
 if(val == 0) Serial.println("no boxes connected"); 
 //
 bool range = inRange(val, 2,3);
-if(range) Serial.println("box 1 and box 2 connected");
-//
+if(range)Serial.println("box 1 and box 2 connected");
+
 range = inRange(val, 10,11);
-if(range) Serial.print("box 1 and box 3 connected");
+if(range) 
+{
+  Serial.println("box 1 and box 3 connected");
+    boxes_1_3_connected = true; 
+}else boxes_1_3_connected = false; 
+
+
 //
 val = map(box2_3, 0, 1024, 0, 4);
-Serial.println(val);  
+//Serial.println(val);  
 // 
 range = inRange(val, 8,9);
-if(range) Serial.println("box 2 and 3 connected");   
-//
-//if(range==9) Serial.println("all 3 connected"); 
- 
-//Touch data for pins 
+if(range) 
+  {
+    Serial.println("box 2 and 3 connected");  
+    boxes_2_3_connected = true;  
+  }else boxes_2_3_connected = false; 
 
-//  int touch0 = touchRead(box1); 
-  
-//  int touchSmooth0 = digitalSmooth(touch0, touch0SmoothArray0); 
-  //Serial.println(touchSmooth0); 
+if(boxes_2_3_connected && boxes_1_3_connected) Serial.println("all 3 connected"); 
+ 
+ 
 }
 
 
