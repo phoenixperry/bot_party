@@ -1,10 +1,9 @@
-
 #include <Adafruit_Sensor.h>
 #include <Adafruit_LSM303_U.h>
 //box pins 
-const int box1 = A5; 
-const int box2 = A4; 
-const int box3 = A2; 
+const int box1 = A0; 
+const int box2 = A8; 
+const int box3 = A7; 
 
 //calibration checks 
 bool started = false; 
@@ -31,7 +30,7 @@ bool allConnected;
 
 //compass values 
 /* Assign a unique ID to this sensor at the same time */
-//Adafruit_LSM303_Mag_Unified mag = Adafruit_LSM303_Mag_Unified(12345);
+Adafruit_LSM303_Mag_Unified mag = Adafruit_LSM303_Mag_Unified(12345);
 
 
 //function prototypes 
@@ -46,20 +45,20 @@ void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600); 
   //vs doing the data in analog filters, we're cheating! Input_pullup is smoothing an analog pin
-  pinMode(A5, INPUT_PULLUP);
-  pinMode(A4, INPUT_PULLUP);
-  pinMode(A2, INPUT_PULLUP);
-
+  pinMode(box1, INPUT_PULLUP);
+  pinMode(box2, INPUT_PULLUP);
+  pinMode(box3, INPUT_PULLUP);
+  
   //calls the calibration routine 
   calibrate();  
 
      /* Initialise the compass */
-//  if(!mag.begin())
-//  {
-//    /* There was a problem detecting the LSM303 ... check your connections */
-//    Serial.println("Ooops, no LSM303 detected ... Check your wiring!");
-//    while(1);
-//  }
+  if(!mag.begin())
+  {
+    /* There was a problem detecting the LSM303 ... check your connections */
+    Serial.println("Ooops, no LSM303 detected ... Check your wiring!");
+    while(1);
+  }
 }
 
 void loop() {
@@ -69,7 +68,7 @@ void loop() {
    boxes1_2 = inRange(ar, avBoxes1_2-5, avBoxes1_2+5); 
 
    //delimiter data
-   Serial.print(":"); 
+   Serial.print(": "); 
  
    Serial.print(boxes1_2); 
    Serial.print(" ");
@@ -94,49 +93,43 @@ void loop() {
    }else allConnected = false; 
 
    Serial.print(allConnected); 
-   Serial.println(" ");
+   Serial.print(" ");
 
 //values for the compasses 
 
-//    float heading = run_compass();
-//   
-//    Serial.print(heading);
-//    Serial.print(" ");
-//     
-//    Serial.print(heading);
-//    Serial.print(" ");
-//    
-//    Serial.print(heading);
-//    Serial.println(" ");
-
+    int heading = run_compass();
    
-//
-//   ar = readTouches(box1, box3); 
-//   ar = map(ar, 0, 1024, 0, 10); 
-//   Serial.println(ar);  
-//   Serial.println("_____________"); 
- 
-  bool box1_touched = isolatedTouches(box1); 
-  bool box2_touched = isolatedTouches(box2);
-  bool box3_touched = isolatedTouches(box3);  
-  Serial.print(box1_touched); 
-  Serial.print(" "); 
-  Serial.print(box2_touched);
-  Serial.print(" ");  
-  Serial.println(box3_touched); 
+    Serial.print(heading);
+    Serial.print(" ");
+     
+    Serial.print(heading);
+    Serial.print(" ");
+    
+    Serial.print(heading);
+    Serial.println(" ");
 
-   
+//  bool box1_touched = isolatedTouches(box1);  
+//  bool box2_touched = isolatedTouches(box2);
+//  bool box3_touched = isolatedTouches(box3);  
+////  Serial.print(box1_touched); 
+////  Serial.print(" "); 
+////  Serial.print(box2_touched);
+////  Serial.print(" ");  
+////  Serial.println(box3_touched); 
+
 }
 
 bool isolatedTouches(int pin){
-   int touch = analogRead(pin); 
-   touch = map(touch, 990,1024, 0, 10); 
-   Serial.println(touch); 
-   if(touch < 3) 
+
+   analogWrite(pin, HIGH);
+   int touch = analogRead(pin);
+   touch = map(touch, 0,1024, 0, 20); 
+   Serial.println(touch);  
+   if(touch < 8) 
    return true; 
    else 
    return false; 
-
+   digitalWrite(pin, LOW);
 } 
 int readTouches(int pin1, int pin2)
 {
@@ -254,20 +247,20 @@ bool inRange(int val, int minimum, int maximum)
 float run_compass(){
 //compass code
   /* Get a new sensor event */
-//  sensors_event_t event;
-//  mag.getEvent(&event);
-//
-//  float Pi = 3.14159;
-//
-//  // Calculate the angle of the vector y,x
-//  float heading = (atan2(event.magnetic.y,event.magnetic.x) * 180) / Pi;
-//
-//  // Normalize to 0-360
-//  if (heading < 0)
-//  {
-//    heading = 360 + heading;
-//  }
-//  //Serial.print("Compass Heading: ");
-//  return heading;
+  sensors_event_t event;
+  mag.getEvent(&event);
+
+  float Pi = 3.14159;
+
+  // Calculate the angle of the vector y,x
+  float heading = (atan2(event.magnetic.y,event.magnetic.x) * 180) / Pi;
+
+  // Normalize to 0-360
+  if (heading < 0)
+  {
+    heading = 360 + heading;
+  }
+  //Serial.print("Compass Heading: ");
+  return heading;
 }
 
