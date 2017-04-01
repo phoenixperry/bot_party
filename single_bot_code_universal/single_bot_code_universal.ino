@@ -3,7 +3,7 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_LSM303_U.h>
 int btnPin = 12; 
-String botID = "03:"; 
+String botID = "01:"; 
 int ledPin = 10; 
 int pulse = 0; 
 int pulseSpeed = 1; 
