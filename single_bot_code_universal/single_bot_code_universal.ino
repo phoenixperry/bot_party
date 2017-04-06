@@ -62,7 +62,9 @@ void loop()
 
   HWSERIAL.print(int(comp_z));
   HWSERIAL.print(" ");
-     
+
+    Serial.print(botID);
+    Serial.print(" ");
     Serial.print(int(heading));
     Serial.print(" ");
      
