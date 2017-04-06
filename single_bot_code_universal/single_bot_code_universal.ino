@@ -2,9 +2,9 @@
 #include <Wire.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_LSM303_U.h> 
-int btnPin = 11; 
+int btnPin = 12; 
 String botID = "03"; 
-int ledPin = 12; 
+int ledPin = 10; 
 int pulse = 0; 
 int pulseSpeed = 1; 
 
@@ -80,10 +80,12 @@ void loop()
   if(btn == 0) 
   {
     HWSERIAL.println('1'); 
+    Serial.println('1');
     analogWrite(ledPin,255);
   }else
   {
     HWSERIAL.println('0'); 
+    Serial.println('0');
     if(pulse > 255 || pulse < 0) pulseSpeed = pulseSpeed * -1; 
    
     analogWrite(ledPin,pulse);
