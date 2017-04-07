@@ -14,9 +14,9 @@ int val;      // Data received from the serial port
 int lf = 10;    // Linefeed in ASCII
 String myString = null;
 
-int[] lm303_1= new int[9]; 
-int[] lm303_2= new int[9];
-int[] lm303_3= new int[9]; 
+int[] lm303_1= new int[6]; 
+int[] lm303_2= new int[6];
+int[] lm303_3= new int[6]; 
 int btn1, btn2, btn3; 
 int touch1, touch2, touch3, touch4; 
 
@@ -47,12 +47,17 @@ void draw() {
      //println(myString);
       String myTemp = myString;
       String[] prefix = splitTokens(myTemp, " ");
-    //println(prefix.length); 
-        if(prefix.length == 6) {
+    println(prefix.length); 
+        if(prefix.length == 4) {
+          println("touch coming in "); 
+           touch1 = int(prefix[0]);
+           println(prefix[0]); 
            touch1 = int(prefix[1]);
+           println(prefix[1]); 
            touch1 = int(prefix[2]);
+           println(prefix[2]); 
            touch1 = int(prefix[3]);
-           touch1 = int(prefix[4]);
+           println(prefix[3]); 
         } 
         
         if(prefix.length == 11){ 
@@ -67,8 +72,8 @@ void draw() {
            lm303_3[3] = int(prefix[4]);
            lm303_3[4] = int(prefix[5]);
            lm303_3[5] = int(prefix[6]);
-           lm303_3[7] = int(prefix[7]);          
-           lm303_3[8] = int(prefix[8]);
+           //lm303_3[7] = int(prefix[7]);          
+           //lm303_3[8] = int(prefix[8]);
            
            btn3 = int(prefix[9]); 
          }
@@ -80,8 +85,8 @@ void draw() {
            lm303_2[3] = int(prefix[4]);
            lm303_2[4] = int(prefix[5]);
            lm303_2[5] = int(prefix[6]);
-           lm303_2[7] = int(prefix[7]);          
-           lm303_2[8] = int(prefix[8]);
+           //lm303_2[7] = int(prefix[7]);          
+           //lm303_2[8] = int(prefix[8]);
            btn2 = int(prefix[9]); 
          }
          if(deviceID == 01) 

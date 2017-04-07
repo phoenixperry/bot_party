@@ -79,8 +79,8 @@ void loop() {
 
   //delimiter data
   
-  Serial.print("00 "); 
-  HWSERIAL.print("00 ");
+  //Serial.print("00 "); 
+  //HWSERIAL.print("00 ");
   
   if(skipBoxes == false) 
   {   
@@ -121,81 +121,6 @@ void loop() {
      HWSERIAL.println(allConnected);  
      delay(80); 
   }
-//values for the compasses 
-//
-//    float heading = run_compass(comp_x,comp_y,comp_z);
-//   
-//    Serial.print(int(heading));
-//    Serial.print(" ");
-//     
-//    Serial.print(int(comp_x));
-//    Serial.print(" ");
-//    
-//    Serial.print(int(comp_y));
-//    Serial.print(" ");
-//
-//    Serial.print(int(comp_z));
-//    Serial.print(" ");
-
-/*    
-    heading = run_compass2(comp_x,comp_y, comp_z);
-   
-    Serial.print(int(heading));
-    Serial.print(" ");
-     
-    Serial.print(int(comp_x));
-    Serial.print(" ");
-    
-    Serial.print(int(comp_y));
-    Serial.print(" ");
-
-    Serial.print(int(comp_z));
-    Serial.print(" ");
-*/
-
-    // values for the accelerometer
-
-/* Get a new sensor event */
-/*
-    sensors_event_t event;
-    accel.getEvent(&event);
-
-    acc_x = event.acceleration.x;
-    acc_y = event.acceleration.y;
-    acc_z = event.acceleration.z;   
-
-    Serial.print(int(acc_x));
-    Serial.print(" ");
-     
-    Serial.print(int(acc_y));
-    Serial.print(" ");
-    
-    Serial.print(int(acc_z));
-    Serial.println(" ");
-    */
-
-//    float ac = run_accel(acc_x, acc_y, acc_z);
-//    Serial.print(int(ac));
-//    Serial.print(" ");
-//    Serial.print(int(acc_x));
-//    Serial.print(" ");
-//    Serial.print(int(acc_y));
-//    Serial.print(" ");
-//    Serial.print(int(acc_z));
-//    Serial.print(" ");
-
-
-    
-
-//  bool box1_touched = isolatedTouches(box1);  
-//  bool box2_touched = isolatedTouches(box2);
-//  bool box3_touched = isolatedTouches(box3);  
-////  Serial.print(box1_touched); 
-////  Serial.print(" "); 
-////  Serial.print(box2_touched);
-////  Serial.print(" ");  
-////  Serial.println(box3_touched); 
-
 }
 
 bool isolatedTouches(int pin){
