@@ -1,15 +1,17 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_LSM303_U.h>
+#define HWSERIAL Serial3
+int id = 00; 
 //box pins 
-const int box1 = A8; 
-const int box2 = A7; 
-const int box3 = A6; 
+const int box1 = A9; 
+const int box2 = A8; 
+const int box3 = A7; 
 
 //calibration checks 
 bool started = false; 
 
 //++++++++++ FILP THIS TRUE TO SKIP OVER THE CALIBATION ROUTINE 
-bool calibrated = false; 
+bool calibrated = true; 
 bool skipBoxes = false; 
 
 bool boxes2_3_calibrated=false; 
@@ -17,10 +19,10 @@ bool boxes1_3_calibrated=false;
 bool boxes1_2_calibrated=false; 
 
 //data for averages 
-int avBoxes1_2; 
-int avBoxes1_3; 
-int avBoxes2_3; 
-int avBoxes1_2_3; 
+int avBoxes1_2=21; 
+int avBoxes1_3=21; 
+int avBoxes2_3=21; 
+int avBoxes1_2_3;
 
 //inbetween box touching state bools
 bool boxes1_2; 
@@ -49,6 +51,7 @@ int calibrateBoxes(int box_a, int box_b);
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600); 
+  HWSERIAL.begin(9600); 
   //vs doing the data in analog filters, we're cheating! Input_pullup is smoothing an analog pin
   pinMode(box1, INPUT_PULLUP);
   pinMode(box2, INPUT_PULLUP);
@@ -73,39 +76,50 @@ void setup() {
 }
 
 void loop() {
+
   //delimiter data
-  Serial.print("01 "); 
+  
+  Serial.print("00 "); 
+  HWSERIAL.print("00 ");
+  
   if(skipBoxes == false) 
   {   
     int ar = readTouches(box1, box2);
   
      ar = map(ar, 0, 1014, 0, 10); 
      boxes1_2 = inRange(ar, avBoxes1_2-5, avBoxes1_2+5); 
-   
-     Serial.print(boxes1_2); 
+    
+     Serial.print(boxes1_2);
+     HWSERIAL.print(boxes1_2); 
      Serial.print(" ");
+     HWSERIAL.print(" "); 
   //     
      ar = readTouches(box1, box3);
      ar = map(ar, 0, 1024, 0, 10); 
      boxes1_3 = inRange(ar, avBoxes1_3-5, avBoxes1_3+5); 
      
      Serial.print(boxes1_3); 
+     HWSERIAL.print(boxes1_3);
      Serial.print(" "); 
-  
+     HWSERIAL.print(" "); 
+     
      ar = readTouches(box2, box3);
      ar = map(ar, 0, 1024, 0, 10); 
      boxes2_3 = inRange(ar, avBoxes2_3-5, avBoxes2_3+5); 
     
      Serial.print(boxes2_3); 
+     HWSERIAL.print(boxes2_3); 
      Serial.print(" ");
-  
+     HWSERIAL.print(" "); 
+     
      if(boxes1_2 && boxes1_3 && boxes2_3)  
      {
       allConnected = true; 
      }else allConnected = false; 
   
-     Serial.print(allConnected); 
-     Serial.println(" ");
+     Serial.println(allConnected);
+     HWSERIAL.println(allConnected);  
+     delay(80); 
   }
 //values for the compasses 
 //

@@ -78,6 +78,7 @@ void loop()
     Serial.print(" ");
   
   int btn = digitalRead(btnPin); 
+  delay(150); 
   
   if(btn == 0) 
   {
@@ -96,7 +97,6 @@ void loop()
   }
 while (HWSERIAL.available()) {
  char inChar = (char)HWSERIAL.read();}
- delay(10); 
 }
 
 
