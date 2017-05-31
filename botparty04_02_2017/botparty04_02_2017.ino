@@ -7,6 +7,7 @@ const int box1 = A9;
 const int box2 = A8; 
 const int box3 = A7; 
 
+int delayTime = 50; 
 //calibration checks 
 bool started = false; 
 
@@ -80,7 +81,7 @@ void loop() {
   //delimiter data
   
   //Serial.print("00 "); 
-  //HWSERIAL.print("00 ");
+ // HWSERIAL.println(" ");
   
   if(skipBoxes == false) 
   {   
@@ -88,38 +89,39 @@ void loop() {
   
      ar = map(ar, 0, 1014, 0, 10); 
      boxes1_2 = inRange(ar, avBoxes1_2-5, avBoxes1_2+5); 
-    
-     Serial.print(boxes1_2);
-     HWSERIAL.print(boxes1_2); 
-     Serial.print(" ");
-     HWSERIAL.print(" "); 
+     Serial.print("BoxOneTwo ");
+     HWSERIAL.print("BoxOneTwo ");     
+     Serial.println(boxes1_2);
+     HWSERIAL.println(boxes1_2); 
+
   //     
      ar = readTouches(box1, box3);
      ar = map(ar, 0, 1024, 0, 10); 
      boxes1_3 = inRange(ar, avBoxes1_3-5, avBoxes1_3+5); 
-     
-     Serial.print(boxes1_3); 
-     HWSERIAL.print(boxes1_3);
-     Serial.print(" "); 
-     HWSERIAL.print(" "); 
+     Serial.print("BoxOneThree "); 
+     HWSERIAL.print("BoxOneThree ");      
+     Serial.println(boxes1_3); 
+     HWSERIAL.println(boxes1_3);
      
      ar = readTouches(box2, box3);
      ar = map(ar, 0, 1024, 0, 10); 
      boxes2_3 = inRange(ar, avBoxes2_3-5, avBoxes2_3+5); 
     
-     Serial.print(boxes2_3); 
-     HWSERIAL.print(boxes2_3); 
-     Serial.print(" ");
-     HWSERIAL.print(" "); 
+     Serial.print("BoxTwoThree ");
+     HWSERIAL.print("BoxTwoThree "); 
+     Serial.println(boxes2_3); 
+     HWSERIAL.println(boxes2_3); 
+
      
      if(boxes1_2 && boxes1_3 && boxes2_3)  
      {
       allConnected = true; 
      }else allConnected = false; 
-  
+     Serial.print("AllBoxes ");
+     HWSERIAL.print("AllBoxes "); 
      Serial.println(allConnected);
      HWSERIAL.println(allConnected);  
-     delay(80); 
+     delay(delayTime); 
   }
 }
 
