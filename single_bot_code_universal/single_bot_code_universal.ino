@@ -3,8 +3,10 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_LSM303_U.h> 
 int btnPin = 12; 
-String botID = "botTwo"; 
-String buttonID = "buttonTwo"; 
+
+String botID = "botThree"; 
+String buttonID = "buttonThree"; 
+
 int delayTime = 150; //set different for each ( 100, 150,200)
 int ledPin = 10 ; 
 int pulse = 0; 
@@ -84,10 +86,7 @@ void loop()
     Serial.print(" ");
 
   int btn = digitalRead(btnPin); 
-  
-  //set this differently for each bot! 
-  delay(delayTime); 
-  
+   
   if(btn == 0) 
   {
     HWSERIAL.println('1'); 
@@ -104,7 +103,11 @@ void loop()
     pulse = pulse + pulseSpeed; 
   }
 while (HWSERIAL.available()) {
- char inChar = (char)HWSERIAL.read();}
+ char inChar = (char)HWSERIAL.read();
+}
+
+  //set this differently for each bot! 
+  delay(delayTime); 
  Serial.flush(); 
 }
 
