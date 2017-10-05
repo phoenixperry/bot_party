@@ -42,9 +42,6 @@ void setup()
 
 void loop() 
 {
-  /* Get a new sensor event */ 
-
- 
   
   // Calculate the angle of the vector y,x
   

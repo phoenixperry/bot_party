@@ -1,29 +1,25 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_LSM303_U.h>
-#define HWSERIAL Serial3
-int id = 00; 
 //box pins 
-const int box1 = A9; 
-const int box2 = A8; 
-const int box3 = A7; 
+const int box1 = A0; 
+const int box2 = A1; 
+const int box3 = A2; 
 
-int delayTime = 50; 
 //calibration checks 
 bool started = false; 
 
 //++++++++++ FILP THIS TRUE TO SKIP OVER THE CALIBATION ROUTINE 
-bool calibrated = true; 
-bool skipBoxes = false; 
+bool calibrated = false; 
 
 bool boxes2_3_calibrated=false; 
 bool boxes1_3_calibrated=false; 
 bool boxes1_2_calibrated=false; 
 
 //data for averages 
-int avBoxes1_2=21; 
-int avBoxes1_3=21; 
-int avBoxes2_3=21; 
-int avBoxes1_2_3;
+int avBoxes1_2; 
+int avBoxes1_3; 
+int avBoxes2_3; 
+int avBoxes1_2_3; 
 
 //inbetween box touching state bools
 bool boxes1_2; 
@@ -34,11 +30,7 @@ bool allConnected;
 
 //compass values 
 /* Assign a unique ID to this sensor at the same time */
-//Adafruit_LSM303_Mag_Unified mag = Adafruit_LSM303_Mag_Unified(12345);
-//float comp_x;
-//float comp_y;
-//float comp_z;
-//
+Adafruit_LSM303_Mag_Unified mag = Adafruit_LSM303_Mag_Unified(12345);
 
 
 //function prototypes 
@@ -52,7 +44,6 @@ int calibrateBoxes(int box_a, int box_b);
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600); 
-  HWSERIAL.begin(9600); 
   //vs doing the data in analog filters, we're cheating! Input_pullup is smoothing an analog pin
   pinMode(box1, INPUT_PULLUP);
   pinMode(box2, INPUT_PULLUP);
@@ -60,70 +51,42 @@ void setup() {
   
   //calls the calibration routine 
   calibrate();  
-
 }
 
 void loop() {
+ 
+   int ar = readTouches(box1, box2);
+   ar = map(ar, 0, 1014, 0, 10); 
+   boxes1_2 = inRange(ar, avBoxes1_2-5, avBoxes1_2+5); 
 
-  //delimiter data
-  
-  //Serial.print("00 "); 
- // HWSERIAL.println(" ");
-  
-  if(skipBoxes == false) 
-  {   
-    int ar = readTouches(box1, box2);
-  
-     ar = map(ar, 0, 1014, 0, 10); 
-     boxes1_2 = inRange(ar, avBoxes1_2-5, avBoxes1_2+5); 
-     Serial.print("BoxOneTwo ");
-     HWSERIAL.print("BoxOneTwo ");     
-     Serial.println(boxes1_2);
-     HWSERIAL.println(boxes1_2); 
+   //delimiter data
+   Serial.print(": "); 
+ 
+   Serial.print(boxes1_2); 
+   Serial.print(" ");
+//     
+   ar = readTouches(box1, box3);
+   ar = map(ar, 0, 1024, 0, 10); 
+   boxes1_3 = inRange(ar, avBoxes1_3-5, avBoxes1_3+5); 
+   
+   Serial.print(boxes1_3); 
+   Serial.print(" "); 
 
-  //     
-     ar = readTouches(box1, box3);
-     ar = map(ar, 0, 1024, 0, 10); 
-     boxes1_3 = inRange(ar, avBoxes1_3-5, avBoxes1_3+5); 
-     Serial.print("BoxOneThree "); 
-     HWSERIAL.print("BoxOneThree ");      
-     Serial.println(boxes1_3); 
-     HWSERIAL.println(boxes1_3);
-     
-     ar = readTouches(box2, box3);
-     ar = map(ar, 0, 1024, 0, 10); 
-     boxes2_3 = inRange(ar, avBoxes2_3-5, avBoxes2_3+5); 
-    
-     Serial.print("BoxTwoThree ");
-     HWSERIAL.print("BoxTwoThree "); 
-     Serial.println(boxes2_3); 
-     HWSERIAL.println(boxes2_3); 
+   ar = readTouches(box2, box3);
+   ar = map(ar, 0, 1024, 0, 10); 
+   boxes2_3 = inRange(ar, avBoxes2_3-5, avBoxes2_3+5); 
+  
+   Serial.print(boxes2_3); 
+   Serial.print(" ");
 
-     
-     if(boxes1_2 && boxes1_3 && boxes2_3)  
-     {
-      allConnected = true; 
-     }else allConnected = false; 
-     Serial.print("AllBoxes ");
-     HWSERIAL.print("AllBoxes "); 
-     Serial.println(allConnected);
-     HWSERIAL.println(allConnected);  
-     delay(delayTime); 
-  }
+   if(boxes1_2 && boxes1_3 && boxes2_3)  
+   {
+    allConnected = true; 
+   }else allConnected = false; 
+
+   Serial.println(allConnected); 
+   //Serial.print(" ");
 }
-
-bool isolatedTouches(int pin){
-
-   analogWrite(pin, HIGH);
-   int touch = analogRead(pin);
-   touch = map(touch, 0,1024, 0, 20); 
-   Serial.println(touch);  
-   if(touch < 8) 
-   return true; 
-   else 
-   return false; 
-   digitalWrite(pin, LOW);
-} 
 
 int readTouches(int pin1, int pin2)
 {
@@ -238,29 +201,23 @@ bool inRange(int val, int minimum, int maximum)
   return ((minimum <= val) && (val <= maximum));
 }
 
-    
-//float run_compass(float &compass_x, float &compass_y, float &compass_z) {
-//  //compass code
-//  /* Get a new sensor event */
-//  sensors_event_t event;
-//  mag.getEvent(&event);
-//
-//  float Pi = 3.14159;
-//
-//  compass_x = event.magnetic.x;
-//  compass_y = event.magnetic.y;
-//  compass_z = event.magnetic.z;
-//
-//  // Calculate the angle of the vector y,x
-//  float heading = (atan2(compass_y,compass_x) * 180) / Pi;
-//
-//  // Normalize to 0-360
-//  if (heading < 0)
-//  {
-//    heading = 360 + heading;
-//  }
-//  //Serial.print("Compass Heading: ");
-//  return heading;
-//}
-//
+float run_compass(){
+//compass code
+  /* Get a new sensor event */
+  sensors_event_t event;
+  mag.getEvent(&event);
+
+  float Pi = 3.14159;
+
+  // Calculate the angle of the vector y,x
+  float heading = (atan2(event.magnetic.y,event.magnetic.x) * 180) / Pi;
+
+  // Normalize to 0-360
+  if (heading < 0)
+  {
+    heading = 360 + heading;
+  }
+  //Serial.print("Compass Heading: ");
+  return heading;
+}
 

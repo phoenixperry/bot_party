@@ -61,6 +61,19 @@ void setup() {
   //calls the calibration routine 
   calibrate();  
 
+     /* Initialise the compass */
+//
+//  mag.enableAutoRange(true);
+//  if(!mag.begin())
+//  {
+//    /* There was a problem detecting the LSM303 ... check your connections */
+//    Serial.println("Ooops, no LSM303 detected ... Check your wiring!");
+//    while(1);
+//  }
+//
+//   /* Initialise the sensor */
+//  if(!accel.begin())
+
 }
 
 void loop() {
