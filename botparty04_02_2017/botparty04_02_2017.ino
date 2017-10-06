@@ -3,21 +3,20 @@
 #define HWSERIAL Serial3
 int id = 00; 
 //box pins 
-const int box1 = A9; 
-const int box2 = A8; 
-const int box3 = A7; 
-
-int delayTime = 50; 
-//calibration checks 
-bool started = false; 
-
+const int box1 = A0; 
+const int box2 = A1; 
+const int box3 = A2; 
 //++++++++++ FILP THIS TRUE TO SKIP OVER THE CALIBATION ROUTINE 
-bool calibrated = true; 
-bool skipBoxes = false; 
+bool calibrated = false; 
 
 bool boxes2_3_calibrated=false; 
 bool boxes1_3_calibrated=false; 
 bool boxes1_2_calibrated=false; 
+
+
+int delayTime = 50; 
+//calibration checks 
+bool started = false; 
 
 //data for averages 
 int avBoxes1_2=21; 

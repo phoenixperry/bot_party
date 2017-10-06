@@ -6,7 +6,19 @@
 int avBoxes1_2=0; 
 int avBoxes1_3=0; 
 int avBoxes2_3=0; 
-int avBoxes1_2_3=0; 
+int avBoxes1_2_3=20; 
+int con = 20; 
+//++++++++++ FILP THIS TRUE TO SKIP OVER THE CALIBATION ROUTINE 
+bool calibrated = true; 
+bool skipBoxes = false; 
+
+//int delayTime = 50; 
+//calibration checks 
+bool started = false; 
+
+bool boxes2_3_calibrated=false; 
+bool boxes1_3_calibrated=false; 
+bool boxes1_2_calibrated=false; 
 
 //inbetween box touching state bools
 bool boxes1_2; 
@@ -61,6 +73,11 @@ Adafruit_LSM303_Mag_Unified mag3 = Adafruit_LSM303_Mag_Unified(IMU_3);
 void doThing(int IMU, Adafruit_LSM303_Mag_Unified *mag, float &comp_x, float &comp_y, float &comp_z, String &botID, int &led, int &btn); 
 
 bool inRange(int val, int minimum, int maximum);
+//launches the calibration routine 
+void calibrate(); 
+
+//calibrates the boxes during the calibration routine 
+int calibrateBoxes(int box_a, int box_b); 
 
 void displaySensorDetails(Adafruit_LSM303_Mag_Unified *mag)
 {
@@ -168,6 +185,9 @@ void setup()
 //  tcaselect(IMU);
 //  displaySensorDetails(&mag1);
 
+ //calls the calibration routine 
+  calibrate();  
+
 }
 
 int readTouches(int pin1, int pin2)
@@ -231,42 +251,143 @@ void doThing(int IMU, Adafruit_LSM303_Mag_Unified *mag, float &comp_x, float &co
 
 void loop(void)
 {
-  doThing(IMU_1, &mag1, comp_x_1, comp_y_1, comp_z_1, "botOne", led_1, btn_1);  
-  doThing(IMU_2, &mag2, comp_x_2, comp_y_2, comp_z_2, "botTwo", led_2, btn_2);
-  doThing(IMU_3, &mag3, comp_x_3, comp_y_3, comp_z_3, "botThree", led_3, btn_3);
-     
-  int ar = readTouches(box1, box2);
+  if(skipBoxes == false) 
+  {   
+    doThing(IMU_1, &mag1, comp_x_1, comp_y_1, comp_z_1, "botOne", led_1, btn_1);  
+    doThing(IMU_2, &mag2, comp_x_2, comp_y_2, comp_z_2, "botTwo", led_2, btn_2);
+    doThing(IMU_3, &mag3, comp_x_3, comp_y_3, comp_z_3, "botThree", led_3, btn_3);
+       
+    int ar = readTouches(box1, box2);
+    
+       ar = map(ar, 0, 1014, 0, 10); 
+       boxes1_2 = inRange(ar, avBoxes1_2-5, avBoxes1_2+5); 
+       
+       Serial.print("BoxOneTwo ");
+       if(boxes1_2 == 0) Serial.println(1); 
+       else Serial.println(0); 
+       //Serial.println(boxes1_2);
   
-     ar = map(ar, 0, 1014, 0, 10); 
-     boxes1_2 = inRange(ar, avBoxes1_2-5, avBoxes1_2+5); 
-     Serial.print("BoxOneTwo ");
-
-     Serial.println(!boxes1_2);
-
-     ar = readTouches(box1, box3);
-     ar = map(ar, 0, 1024, 0, 10); 
-     boxes1_3 = inRange(ar, avBoxes1_3-5, avBoxes1_3+5); 
-     Serial.print("BoxOneThree "); 
+       ar = readTouches(box1, box3);
+       ar = map(ar, 0, 1024, 0, 10); 
+       boxes1_3 = inRange(ar, avBoxes1_3-5, avBoxes1_3+5); 
+       Serial.print("BoxOneThree "); 
+       if(boxes1_3 == 0) Serial.println(1); 
+       else Serial.println(0); 
+//       Serial.println(boxes1_3); 
       
-     Serial.println(!boxes1_3); 
-    
-     ar = readTouches(box2, box3);
-     ar = map(ar, 0, 1024, 0, 10); 
-     boxes2_3 = inRange(ar, avBoxes2_3-5, avBoxes2_3+5); 
-    
-     Serial.print("BoxTwoThree ");
-     Serial.println(!boxes2_3); 
- 
-     if(boxes1_2 && boxes1_3 && boxes2_3)  
-     {
-      allConnected = true; 
-     }else allConnected = false; 
-     Serial.print("AllBoxes ");
-     Serial.println(!allConnected);
-     delay(delayTime); 
+       ar = readTouches(box2, box3);
+       ar = map(ar, 0, 1024, 0, 10); 
+       boxes2_3 = inRange(ar, avBoxes2_3-5, avBoxes2_3+5); 
+      
+       Serial.print("BoxTwoThree ");
+       if(boxes2_3 == 0) Serial.println(1); 
+       else Serial.println(0); 
+//       Serial.println(boxes2_3); 
+
+    //three boxes hack 
+       
+       int theseBoxes = readTouches(A0, A1);
+       theseBoxes = map(theseBoxes, 0, 1024, 0, 10);     
+       //Serial.println(theseBoxes); 
+   
+      if(boxes1_2 && boxes1_3 && boxes2_3){  
+         if(theseBoxes >15) 
+         {
+          allConnected = true; 
+         }else allConnected = false;
+          
+          Serial.print("AllBoxes ");
+      // if(con == 20) Serial.println(1); 
+       //if(allConnected == 0) Serial.println(1); 
+     //  else Serial.println(0); 
+        Serial.println(allConnected);
+      }
+       delay(delayTime); 
+  }
 }
 
+void calibrate(){
+   while(!calibrated) {
+    // put your main code here, to run repeatedly:
+    String incoming = Serial.readStringUntil('\n');
+     
+    if (started==false)
 
+    { 
+      Serial.println("touch boxes 1 & 2 then type ! in the above text box & enter"); 
+    }
+    
+    if(incoming.length() > 0);{
+      //note incoming includes a return character and new line (two bytes)  
+      
+      if(incoming == "!" && boxes1_2_calibrated == false) 
+       {  
+        started = true; 
+        avBoxes1_2 = calibrateBoxes(box1, box2); 
+        Serial.println("Done calibrating boxes 1&2"); 
+        Serial.print("Their average is saved "); 
+        Serial.println(avBoxes1_2); 
+        Serial.println("Now touch box1 and box3 and type @ & enter to proceed"); 
+        boxes1_2_calibrated = true; 
+       } 
+    }
+    ///now calibrating boxes 1&3 
+    if(incoming == "@" &&boxes1_2_calibrated)
+    {
+        avBoxes1_3 = calibrateBoxes(box1, box3); 
+        Serial.println("Done calibrating boxes 1&3"); 
+        Serial.print("Their average is saved "); 
+        Serial.println(avBoxes1_3); 
+        Serial.println("Now touch box2 and box3 and type # & enter to proceed"); 
+        boxes1_3_calibrated = true; 
+    }
+     ///now calibrating boxes 2&3
+    if(incoming == "#" &&boxes1_3_calibrated)
+    {
+        avBoxes2_3 = calibrateBoxes(box2, box3); 
+        Serial.println("Done calibrating boxes 2&3"); 
+        Serial.print("Their average is saved "); 
+        Serial.println(avBoxes2_3); 
+        Serial.println("That's it! We're about to start up data sending!"); 
+        boxes2_3_calibrated = true; 
+        calibrated = true; 
+        delay(1500); 
+    } 
+  }
+} 
+
+int calibrateBoxes(int box_a, int box_b){
+        Serial.println("You've got 2 seconds to touch boxes! Starting up");
+        delay(2000); 
+        double startTime = millis();
+        double endTime = startTime + 5000; 
+    
+   
+        int total = 0; 
+        int samples = 0; 
+    
+          while(startTime < endTime)
+          {
+            Serial.println("reading for 5 seconds"); 
+            int theseBoxes = readTouches(box_a, box_b);
+            theseBoxes = map(theseBoxes, 0, 1024, 0, 10);
+          
+             
+            Serial.println(theseBoxes); 
+            startTime = millis();
+
+            //safe guarding against bad touches. 
+             if(theseBoxes > 2) 
+             {
+              total = theseBoxes + total; 
+              samples = samples+1;
+             }
+            
+            delay(100); 
+          }
+          
+    return total/samples;  
+} 
 
 
 
