@@ -285,23 +285,19 @@ void loop(void)
 //       Serial.println(boxes2_3); 
 
     //three boxes hack 
-       
-       int theseBoxes = readTouches(A0, A1);
-       theseBoxes = map(theseBoxes, 0, 1024, 0, 10);     
-       //Serial.println(theseBoxes); 
    
-      if(boxes1_2 && boxes1_3 && boxes2_3){  
-         if(theseBoxes >15) 
-         {
-          allConnected = true; 
-         }else allConnected = false;
-          
-          Serial.print("AllBoxes ");
+      if(!boxes1_2 && !boxes1_3 && !boxes2_3){  
+        allConnected = true; 
+         }else {
+          allConnected = false;
+         }
+      
+        Serial.print("AllBoxes ");
       // if(con == 20) Serial.println(1); 
        //if(allConnected == 0) Serial.println(1); 
      //  else Serial.println(0); 
         Serial.println(allConnected);
-      }
+     
        delay(delayTime); 
   }
 }
