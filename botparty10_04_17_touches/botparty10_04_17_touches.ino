@@ -1,9 +1,9 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_LSM303_U.h>
 //box pins 
-const int box1 = A7; 
-const int box2 = A8; 
-const int box3 = A9; 
+const int box1 = A0; 
+const int box2 = A1; 
+const int box3 = A2; 
 
 //calibration checks 
 bool started = false; 
@@ -84,9 +84,8 @@ void loop() {
     allConnected = true; 
    }else allConnected = false; 
 
-   Serial.print(allConnected); 
-   Serial.print(" ");
-
+   Serial.println(allConnected); 
+   //Serial.print(" ");
 }
 
 int readTouches(int pin1, int pin2)

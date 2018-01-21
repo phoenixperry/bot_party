@@ -3,8 +3,12 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_LSM303_U.h> 
 int btnPin = 12; 
-String botID = "03"; 
-int ledPin = 10; 
+
+String botID = "botThree"; 
+String buttonID = "buttonThree"; 
+
+int delayTime = 150; //set different for each ( 100, 150,200)
+int ledPin = 10 ; 
 int pulse = 0; 
 int pulseSpeed = 1; 
 
@@ -38,9 +42,6 @@ void setup()
 
 void loop() 
 {
-  /* Get a new sensor event */ 
-
- 
   
   // Calculate the angle of the vector y,x
   
@@ -48,11 +49,15 @@ void loop()
   
   //compass values 
   int rounded = heading; 
+  Serial.print(botID); 
+  Serial.print(" "); 
+  Serial.print(rounded);  
+  Serial.print(" "); 
+  
   HWSERIAL.print(botID);
   HWSERIAL.print(" ");
   HWSERIAL.print(rounded);
   HWSERIAL.print(" ");
-  //Serial.println(rounded);  
  
   HWSERIAL.print(int(comp_x));
   HWSERIAL.print(" ");
@@ -60,11 +65,9 @@ void loop()
   HWSERIAL.print(int(comp_y));
   HWSERIAL.print(" ");
 
-  HWSERIAL.print(int(comp_z));
-  HWSERIAL.print(" ");
-     
-    Serial.print(int(heading));
-    Serial.print(" ");
+  HWSERIAL.println(int(comp_z));
+//  HWSERIAL.print(" ");
+
      
     Serial.print(int(comp_x));
     Serial.print(" ");
@@ -72,11 +75,15 @@ void loop()
     Serial.print(int(comp_y));
     Serial.print(" ");
 
-    Serial.print(int(comp_z));
+    Serial.println(int(comp_z));
+      
+    HWSERIAL.print(buttonID); 
+    HWSERIAL.print(" "); 
+    Serial.print(buttonID); 
     Serial.print(" ");
-  
+
   int btn = digitalRead(btnPin); 
-  
+   
   if(btn == 0) 
   {
     HWSERIAL.println('1'); 
@@ -93,8 +100,12 @@ void loop()
     pulse = pulse + pulseSpeed; 
   }
 while (HWSERIAL.available()) {
- char inChar = (char)HWSERIAL.read();}
- delay(10); 
+ char inChar = (char)HWSERIAL.read();
+}
+
+  //set this differently for each bot! 
+  delay(delayTime); 
+ Serial.flush(); 
 }
 
 
