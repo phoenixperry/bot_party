@@ -45,8 +45,8 @@ This is the repo for Bot Party.
 
 
 ### TCA9548A
-* SCL -> SCL Arduino UNO
-* SDA -> SDA Arduino UNO
+* SCL -> SCL Arduino UNO (A5)
+* SDA -> SDA Arduino UNO (A4)
 * VIN -> 5V Arduino Uno
 * GND -> GND Arduino Uno
 
