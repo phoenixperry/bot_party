@@ -50,3 +50,5 @@ GND -> GND Arduino Uno
 
 ## Parts:
 ![LSM303](lsm303.jpg)
+[Adafruit TCA9548A](https://learn.adafruit.com/assets/27690)
+[Arduino Uno](http://forum.arduino.cc/index.php?action=dlattach;topic=146315.0;attach=90365)
