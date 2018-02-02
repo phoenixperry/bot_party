@@ -1,7 +1,7 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arduino_Sensors_To_Unity", "Assembly-CSharp.csproj", "{80578E51-5776-99C4-8B86-21029120A7F5}"
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2017
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arduino_Sensors_To_Unity", "Arduino_Sensors_To_Unity.csproj", "{D8560498-CBF9-B42B-E247-B73D6E474686}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,15 +9,12 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{80578E51-5776-99C4-8B86-21029120A7F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{80578E51-5776-99C4-8B86-21029120A7F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{80578E51-5776-99C4-8B86-21029120A7F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{80578E51-5776-99C4-8B86-21029120A7F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8560498-CBF9-B42B-E247-B73D6E474686}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8560498-CBF9-B42B-E247-B73D6E474686}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8560498-CBF9-B42B-E247-B73D6E474686}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8560498-CBF9-B42B-E247-B73D6E474686}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = Assembly-CSharp.csproj
 	EndGlobalSection
 EndGlobal
