@@ -7,7 +7,7 @@ using System.Collections.Generic;
 public class SerialReader : MonoBehaviour
 {
 
-    SerialPort stream = new SerialPort("COM3", 9600); //this is for the port you're on = it has to match what arduino is plugged into       
+    SerialPort stream = new SerialPort("COM5", 9600); //this is for the port you're on = it has to match what arduino is plugged into       
    
     public GameObject botData;
     public GameObject touchData; 

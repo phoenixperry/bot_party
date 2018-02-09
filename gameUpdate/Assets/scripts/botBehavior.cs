@@ -24,6 +24,6 @@ public class botBehavior : MonoBehaviour {
 
     public void triggerSound() {
         btn.onClick.Invoke();
-    }
+         }
 
 }
