@@ -384,7 +384,3 @@ int calibrateBoxes(int box_a, int box_b){
           
     return total/samples;  
 } 
-
-
-
-
