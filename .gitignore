@@ -2,7 +2,9 @@
 #################
 ## Eclipse
 #################
-
+Library.meta
+UnityGame/gameUpdate/Library
+/UnityGame/gameUpdate/Library
 *.pydevproject
 .project
 .metadata
