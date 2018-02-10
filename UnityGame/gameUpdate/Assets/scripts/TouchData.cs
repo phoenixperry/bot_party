@@ -23,6 +23,11 @@ public class TouchData : MonoBehaviour
     private bool boxTwoThreeOn = false;
     private bool boxOneThreeOn = false;
 
+    public int boxOneTwoPreviousState;
+    public int boxOneThreePreviousState;
+    public int boxTwoThreePreviousState;
+    public int allTouchingPreviousState; 
+
     //these are the events you can resister functions to if you want to listen for touch events. 
     /*If you want to use them, you need to use the EventManager Object. Go into the class where the methodd you want to have run with the event occurs and add an OnEnable and OnDisable function subscripting to these events 
      * Here's a sample
@@ -108,11 +113,14 @@ public class TouchData : MonoBehaviour
                     OnBoxOneTwoTouched(); 
             }
             boxOneTwoOn = true;
+            boxOneTwoPreviousState = touch; 
         }
-        else if (touchingBoxes == "BoxOneTwo" && touch == 0)
+        else if (touchingBoxes == "BoxOneTwo" && touch == 0 && boxOneTwoPreviousState == 1)
         {
             boxOneTwoOn = false;
-
+            boxOneTwoPreviousState = touch; 
+            if (OnBoxOneTwoReleased != null)
+                OnBoxOneTwoReleased();
         }
         else if (touchingBoxes == "BoxTwoThree" && touch == 1 && allOn == false && boxTwoThreeOn == false)
         {
@@ -120,42 +128,61 @@ public class TouchData : MonoBehaviour
             {
                 gameObject.GetComponent<AudioSource>().clip = touchsound[1] as AudioClip;
                 gameObject.GetComponent<AudioSource>().Play();
-                if (OnBoxOneTwoTouched != null)
-                    OnBoxOneTwoTouched();
+                if (OnBoxTwoThreeTouched != null)
+                    OnBoxTwoThreeTouched();
             }
             boxTwoThreeOn = true;
+            boxTwoThreePreviousState = touch;
         }
-        else if (touchingBoxes == "BoxTwoThree" && touch == 0)
+        else if (touchingBoxes == "BoxTwoThree" && touch == 0 && boxTwoThreePreviousState == 1)
         {
             boxTwoThreeOn = false;
+            if (OnBoxTwoThreeReleased != null)
+                OnBoxTwoThreeReleased();
+            boxTwoThreePreviousState = touch;
         }
         else if (touchingBoxes == "BoxOneThree" && touch == 1 && allOn == false && boxOneThreeOn == false)
         {
+           
             if (!gameObject.GetComponent<AudioSource>().isPlaying)
             {
                 gameObject.GetComponent<AudioSource>().clip = touchsound[2] as AudioClip;
                 gameObject.GetComponent<AudioSource>().Play();
+                if (OnBoxOneThreeTouched != null)
+                    OnBoxOneThreeTouched();
             }
             boxOneThreeOn = true;
+            boxOneThreePreviousState = touch;
         }
-        else if (touchingBoxes == "BoxOneThree" && touch == 0)
+        else if (touchingBoxes == "BoxOneThree" && touch == 0 && boxOneThreePreviousState == 1)
         {
             boxOneThreeOn = false;
+            if (OnBoxOneThreeReleased != null)
+                OnBoxOneThreeReleased();
+            boxOneThreePreviousState = touch;
         }
-        else if (touchingBoxes == "AllBoxes" && touch == 1 && allOn == false )
-        {
 
-           
-                Debug.Log("got here");
+        else if (touchingBoxes == "AllBoxes" && touch == 1 && allOn == false)
+        {
+            if (!gameObject.GetComponent<AudioSource>().isPlaying)
+            {
                 gameObject.GetComponent<AudioSource>().clip = touchsound[3] as AudioClip;
                 gameObject.GetComponent<AudioSource>().Play();
-            
+                if (OnAllBoxesConnected != null) {
+                    OnAllBoxesConnected(); 
+                } 
+            }
             allOn = true;
-
-        }
-        if (touchingBoxes == "AllBoxes" && touch == 0)
+            allTouchingPreviousState = touch; 
+        }else if (touchingBoxes == "AllBoxes" && touch == 0 && allTouchingPreviousState == 1)
         {
             allOn = false;
+            if(OnAllBoxesReleased !=null)
+                OnAllBoxesReleased();
+
+            allTouchingPreviousState = touch; 
+            
+
         }
     }
 }
