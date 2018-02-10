@@ -20,7 +20,7 @@ public class EventTestExample : MonoBehaviour {
         TouchData.OnAllBoxesConnected += testFunction4Touch;
         TouchData.OnAllBoxesReleased += testFunction4Release; 
     }
-
+    //here's how to unsubscibe - if you do one, you must do the other! 
     public void OnDisable() {
 
         TouchData.OnBoxOneTwoTouched -= testFunctionOneTouch;
