@@ -4,17 +4,15 @@ using UnityEngine;
 using UnityEngine.UI; 
 public class botBehavior : MonoBehaviour {
 
-    public Button btn; 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 
+    public Button btn; 
+   
+    // Use this for initialization
+
+    public void setBtn(UnityEngine.UI.Button _btn) {
+
+        btn = _btn;  
+    } 
     public void rotateBot(int xpos, int ypos, int zpos) {
 
         //TODO: make this a reasonable animation in the future 
@@ -23,7 +21,9 @@ public class botBehavior : MonoBehaviour {
     }
 
     public void triggerSound() {
+
         btn.onClick.Invoke();
-         }
+
+      }
 
 }

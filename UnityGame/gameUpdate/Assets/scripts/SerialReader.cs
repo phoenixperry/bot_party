@@ -3,65 +3,151 @@ using System.Collections;
 using System.IO.Ports;
 using System.Collections.Generic;
 
-
-public class SerialReader : MonoBehaviour
+// MAKE SURE THIS IS ON SerialDataManager 
+public static class AppHelper
+{
+#if UNITY_WEBPLAYER
+     public static string webplayerQuitURL = "http://google.com";
+#endif
+    public static void Quit()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#elif UNITY_WEBPLAYER
+         Application.OpenURL(webplayerQuitURL);
+#else
+         Application.Quit();
+#endif
+    }
+}
+    public class SerialReader : MonoBehaviour
 {
     
-    SerialPort stream = new SerialPort("COM4", 9600); //this is for the port you're on = it has to match what arduino is plugged into       
+    SerialPort stream = new SerialPort("COM3", 115200); //this is for the port you're on = it has to match what arduino is plugged into       
 
-    public GameObject botData;
-    public GameObject touchData; 
+     GameObject botData;
+     GameObject touchData;
+    string incommingData;
     // Use this for initialization
     void Start()
     {
+        botData = GameObject.Find("BotDataManager");
+        touchData = GameObject.Find("TouchManager(Clone)");
         // Get a list of serial port names in case we are not dealing with com3 .
         string[] ports = SerialPort.GetPortNames();
 
         Debug.Log("The following serial ports were found:");
 
-        // Display each port name to the console.
+        // Display each port name to the console just in case you are not using the same com port you did last time. Note on a mac this will be something like a path.
         foreach (string port in ports)
         {
             Debug.Log(port);
         }
-
         stream.Open();
+        StartCoroutine
+       (
+       AsynchronousReadFromArduino
+           (incommingData =>
+            {
+                //Debug.Log(incommingData);
+                string [] sensors = incommingData.Split(' ');
+                if (sensors.Length > 1 && sensors.Length < 4)
+                {
+                    touchData.GetComponent<TouchData>().updateData(incommingData);
+                    //debug.log(value);
+                }
+                else if (sensors.Length == 6)
+                {
+                    botData.GetComponent<BotData>().updateData(incommingData);
+                    //debug.log(value);
+                }
+
+            },     // Callback
+            () => Debug.LogError("Error!"), // Error callback
+            10000f                          // Timeout (milliseconds)
+        )
+    );
+    }
+
+
+    public IEnumerator AsynchronousReadFromArduino(System.Action<string> callback, System.Action fail = null, float timeout = float.PositiveInfinity)
+    {
+        System.DateTime initialTime = System.DateTime.Now;
+        System.DateTime nowTime;
+        System.TimeSpan diff = default(System.TimeSpan);
+
+        string dataString = null;
+        do
+        {
+            try
+            {
+                dataString = stream.ReadLine();
+            }
+            catch (System.TimeoutException)
+            {
+                dataString = null;
+            }
+
+            if (dataString != null)
+            {
+                callback(dataString);
+                yield return null;
+            }
+            else
+                yield return new WaitForSeconds(0.05f);
+
+            nowTime = System.DateTime.Now;
+            diff = nowTime - initialTime;
+
+        } while (diff.Milliseconds < timeout);
+
+        if (fail != null)
+            fail();
+        yield return null;
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        stream.ReadTimeout = 40; // this is a safety catch in case the port hangs
-        try
-        {
-            string value = stream.ReadLine();
-            string[] sensors = value.Split(' ');
-            Debug.Log(value); 
+        //stream.readtimeout = 20; // this is a safety catch in case the port hangs
+        //try
+        //{
+        //    string value = stream.readline();
+        //    string[] sensors = value.split(' ');
+            // debug.log(value); 
             //foreach (string s in sensors)
             //{
             //    if (s != "")
-            //        Debug.Log(s);
+            //        debug.log(s);
 
             //}
 
             //if we have 2 values, we have a touch state 
-            //Debug.Log(sensors.Length);
-        if (sensors.Length > 1 && sensors.Length < 4)
-            {
-                touchData.GetComponent<TouchData>().updateData(value);
-                //Debug.Log(value);
-            }
-            else if (sensors.Length == 6) {
-                botData.GetComponent< BotData > ().updateData(value);
-                //Debug.Log(value);
+            //debug.log(sensors.length);
+    //        if (sensors.length > 1 && sensors.length < 4)
+    //        {
+    //            touchdata.getcomponent<touchdata>().updatedata(value);
+    //            //debug.log(value);
+    //        }
+    //        else if (sensors.length == 6)
+    //        {
+    //            botdata.getcomponent<botdata>().updatedata(value);
+    //            //debug.log(value);
+    //            stream.basestream.flush();
+    //        }
 
-            }
+    //    }
+    //    catch (system.exception e)
+    //    {
+    //        debug.log("your serial port shit the bed. try unplugging your arduino and reloading your code on it");
+    //    }
+    //    //use esscape to quit to make sure you close the serial port out. 
+    //    if (input.getkey("escape"))
+    //    {
+    //        stream.close();
+    //        apphelper.quit();
 
-            stream.BaseStream.Flush();
-        }
-        catch (System.Exception e) {
-            //Debug.Log("your serial port shit the bed. try unplugging your arduino and reloading your code on it"); 
-        }
- 
-   }
+    //    }
+    }
+
 }

@@ -7,7 +7,7 @@ using System.Collections;
 public class buttonSound : MonoBehaviour
 {
 
-    bool btnOn = false; 
+ 
     void Start()
     {
         gameObject.GetComponent<Button>().onClick.AddListener(TaskOnClick);
@@ -19,10 +19,11 @@ public class buttonSound : MonoBehaviour
     void TaskOnClick()
     {
 
-        if (!gameObject.GetComponent<AudioSource>().isPlaying && btnOn == false)
+        if (!gameObject.GetComponent<AudioSource>().isPlaying)
         {
+           // Debug.Log("btn fired"); 
             gameObject.GetComponent<AudioSource>().Play();
-            btnOn = true;
+           
         } 
        
     }

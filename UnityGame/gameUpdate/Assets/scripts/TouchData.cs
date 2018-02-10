@@ -39,7 +39,7 @@ public class TouchData : MonoBehaviour
         string[] sensors = value.Split(' '); //split the stinrg we got from arduino using a space as the delimiter of the string 
         touchingBoxes = sensors[0]; //the first value indicate which boxes are are testing for being connected 
         int.TryParse(sensors[1], out touch); //get the string value of the touch state and convert it to an int for sanity
-        Debug.Log("Touch Parsed: " + touchingBoxes + " touch state " + touch);
+        //Debug.Log("Touch Parsed: " + touchingBoxes + " touch state " + touch);
 
 
         if (touchingBoxes == "BoxOneTwo" && touch == 1 && allOn == false && boxOneTwoOn == false)

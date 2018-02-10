@@ -134,7 +134,7 @@ bool inRange(int val, int minimum, int maximum)
 
 void setup()
 {
-  Serial.begin(9600);
+  Serial.begin(115200);
   pinMode(btn_1, INPUT_PULLUP); 
   pinMode(btn_2, INPUT_PULLUP); 
   pinMode(btn_3, INPUT_PULLUP);
