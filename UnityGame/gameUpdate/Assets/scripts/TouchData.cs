@@ -23,6 +23,62 @@ public class TouchData : MonoBehaviour
     private bool boxTwoThreeOn = false;
     private bool boxOneThreeOn = false;
 
+    //these are the events you can resister functions to if you want to listen for touch events. 
+    /*If you want to use them, you need to use the EventManager Object. Go into the class where the methodd you want to have run with the event occurs and add an OnEnable and OnDisable function subscripting to these events 
+     * Here's a sample
+     * public class sampleClass:MonoBehaviour
+     *  {
+     *      public void onEnable()
+     *      {
+     *          TouchData.OnBoxOneTwoTouched += myFunction;  
+     *      }
+     *      public void onDisable
+     *      {
+     *          TouchData.OnBoxOneTwoTouched -= myFunctions; 
+     *      }
+     *      void myFunction() {
+     *          //nonsense to have happen when box one and two are touched. 
+     *      } 
+     *  }
+     *  
+     */
+
+
+    /*
+     * If you want to trigger an event from this class, all you have to do is this 
+     *  if(OnBoxOneTwoTouched != null) //a null check is required - if you have an event with no subscribers, it will cause issues in the codebase. 
+     *      OnBoxOneTwoTouched(); 
+     */
+    //here are all the events you can subscribe to elsewhere in the code 
+
+    public delegate void BoxOneTwoAction(); //all methods that subscribe to this delegate must be void and pass in no data 
+    public static event BoxOneTwoAction OnBoxOneTwoTouched; //this is the event to register your functions to 
+
+
+    public delegate void BoxOneThreeAction();
+    public static event BoxOneThreeAction OnBoxOneThreeTouched;
+
+    public delegate void BoxTwoThreeAction();
+    public static event BoxTwoThreeAction OnBoxTwoThreeTouched;
+
+    public delegate void AllBoxesConnectedAction();
+    public static event AllBoxesConnectedAction OnAllBoxesConnected;
+
+
+    public delegate void BoxOneTwoReleaseAction(); //all methods that subscribe to this delegate must be void and pass in no data 
+    public static event BoxOneTwoReleaseAction OnBoxOneTwoReleased; //this is the event to register your functions to 
+
+
+    public delegate void BoxOneThreeleaseAction(); //all methods that subscribe to this delegate must be void and pass in no data 
+    public static event BoxOneTwoReleaseAction OnBoxOneThreeReleased; //this is the event to register your functions to 
+
+    public delegate void BoxTwoThreeReleaseAction(); //all methods that subscribe to this delegate must be void and pass in no data 
+    public static event BoxTwoThreeReleaseAction OnBoxTwoThreeReleased; //this is the event to register your functions to 
+
+
+    public delegate void AllBoxesReleasedAction();
+    public static event AllBoxesReleasedAction OnAllBoxesReleased;
+
     private void Start()
     {
         gameObject.GetComponent<AudioSource>().playOnAwake = false;
@@ -48,12 +104,15 @@ public class TouchData : MonoBehaviour
             {
                 gameObject.GetComponent<AudioSource>().clip = touchsound[0] as AudioClip;
                 gameObject.GetComponent<AudioSource>().Play();
+                if(OnBoxOneTwoTouched != null)
+                    OnBoxOneTwoTouched(); 
             }
             boxOneTwoOn = true;
         }
         else if (touchingBoxes == "BoxOneTwo" && touch == 0)
         {
             boxOneTwoOn = false;
+
         }
         else if (touchingBoxes == "BoxTwoThree" && touch == 1 && allOn == false && boxTwoThreeOn == false)
         {
@@ -61,6 +120,8 @@ public class TouchData : MonoBehaviour
             {
                 gameObject.GetComponent<AudioSource>().clip = touchsound[1] as AudioClip;
                 gameObject.GetComponent<AudioSource>().Play();
+                if (OnBoxOneTwoTouched != null)
+                    OnBoxOneTwoTouched();
             }
             boxTwoThreeOn = true;
         }

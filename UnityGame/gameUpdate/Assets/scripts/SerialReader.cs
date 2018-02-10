@@ -106,48 +106,6 @@ public static class AppHelper
         yield return null;
     }
 
-    // Update is called once per frame
-    void FixedUpdate()
-    {
-        //stream.readtimeout = 20; // this is a safety catch in case the port hangs
-        //try
-        //{
-        //    string value = stream.readline();
-        //    string[] sensors = value.split(' ');
-            // debug.log(value); 
-            //foreach (string s in sensors)
-            //{
-            //    if (s != "")
-            //        debug.log(s);
 
-            //}
-
-            //if we have 2 values, we have a touch state 
-            //debug.log(sensors.length);
-    //        if (sensors.length > 1 && sensors.length < 4)
-    //        {
-    //            touchdata.getcomponent<touchdata>().updatedata(value);
-    //            //debug.log(value);
-    //        }
-    //        else if (sensors.length == 6)
-    //        {
-    //            botdata.getcomponent<botdata>().updatedata(value);
-    //            //debug.log(value);
-    //            stream.basestream.flush();
-    //        }
-
-    //    }
-    //    catch (system.exception e)
-    //    {
-    //        debug.log("your serial port shit the bed. try unplugging your arduino and reloading your code on it");
-    //    }
-    //    //use esscape to quit to make sure you close the serial port out. 
-    //    if (input.getkey("escape"))
-    //    {
-    //        stream.close();
-    //        apphelper.quit();
-
-    //    }
-    }
 
 }

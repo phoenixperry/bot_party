@@ -28,7 +28,7 @@ public class BotData : MonoBehaviour
     int btn2Down = 0;
     int btn3Down = 0;
 
-
+   
     public void Start() {
         bot1 = Instantiate(bot1, new Vector3(-3.0f, 1.0f, 0.0f), Quaternion.identity) as GameObject;
         bot2 = Instantiate(bot2, new Vector3(0.0f, 1.0f, 0.0f), Quaternion.identity) as GameObject;
