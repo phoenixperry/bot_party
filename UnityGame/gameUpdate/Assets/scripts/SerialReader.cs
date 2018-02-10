@@ -36,7 +36,7 @@ public class SerialReader : MonoBehaviour
         {
             string value = stream.ReadLine();
             string[] sensors = value.Split(' ');
-            //Debug.Log(value); 
+            Debug.Log(value); 
             //foreach (string s in sensors)
             //{
             //    if (s != "")
