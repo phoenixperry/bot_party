@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/AudioHelm/Demos/BouncyBalls.unity
+- path: Assets/Arduino.unity
   isLoaded: 1
   isActive: 1

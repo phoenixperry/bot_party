@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{80578E51-5776-99C4-8B86-21029120A7F5}</ProjectGuid>
+    <ProjectGuid>{917CB561-C116-30C1-E116-57366E7DF925}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -51,18 +51,52 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\AudioHelm\Demos\Assets\Scripts\BounceAudio2d.cs" />
+     <Compile Include="Assets\AudioHelm\Demos\Assets\Scripts\CameraMan.cs" />
+     <Compile Include="Assets\AudioHelm\Demos\Assets\Scripts\ControlJump.cs" />
+     <Compile Include="Assets\AudioHelm\Demos\Assets\Scripts\ControlTorque.cs" />
+     <Compile Include="Assets\AudioHelm\Demos\Assets\Scripts\DestroyAfterTime.cs" />
+     <Compile Include="Assets\AudioHelm\Demos\Assets\Scripts\EnableAfterTime.cs" />
+     <Compile Include="Assets\AudioHelm\Demos\Assets\Scripts\GroundKey.cs" />
+     <Compile Include="Assets\AudioHelm\Demos\Assets\Scripts\GroundKeyboard.cs" />
+     <Compile Include="Assets\AudioHelm\Demos\Assets\Scripts\MaterialPulse.cs" />
+     <Compile Include="Assets\AudioHelm\Demos\Assets\Scripts\NoteBlaster.cs" />
+     <Compile Include="Assets\AudioHelm\Demos\Assets\Scripts\Oscillate.cs" />
+     <Compile Include="Assets\AudioHelm\Demos\Assets\Scripts\PlatformCreator.cs" />
+     <Compile Include="Assets\AudioHelm\Demos\Assets\Scripts\PulseImageOnNote.cs" />
+     <Compile Include="Assets\AudioHelm\Demos\Assets\Scripts\RepetitiveSpawner.cs" />
+     <Compile Include="Assets\AudioHelm\Demos\Assets\Scripts\SequenceGenerator.cs" />
+     <Compile Include="Assets\AudioHelm\Demos\Assets\Scripts\SetAnimationParameter.cs" />
+     <Compile Include="Assets\AudioHelm\Demos\Assets\Scripts\SetHelmParameter.cs" />
+     <Compile Include="Assets\AudioHelm\Demos\Assets\Scripts\SetSleepThreshold.cs" />
+     <Compile Include="Assets\AudioHelm\Demos\Assets\Scripts\SyncAudioAndSequencers.cs" />
+     <Compile Include="Assets\AudioHelm\Demos\Assets\Scripts\ToggleParameter.cs" />
+     <Compile Include="Assets\AudioHelm\Scripts\AudioHelmClock.cs" />
+     <Compile Include="Assets\AudioHelm\Scripts\HelmAudioInit.cs" />
+     <Compile Include="Assets\AudioHelm\Scripts\HelmAudioReceive.cs" />
+     <Compile Include="Assets\AudioHelm\Scripts\HelmController.cs" />
+     <Compile Include="Assets\AudioHelm\Scripts\HelmParameter.cs" />
+     <Compile Include="Assets\AudioHelm\Scripts\HelmPatch.cs" />
+     <Compile Include="Assets\AudioHelm\Scripts\HelmPatchFormat.cs" />
+     <Compile Include="Assets\AudioHelm\Scripts\HelmSequencer.cs" />
+     <Compile Include="Assets\AudioHelm\Scripts\Keyzone.cs" />
+     <Compile Include="Assets\AudioHelm\Scripts\MidiFile.cs" />
+     <Compile Include="Assets\AudioHelm\Scripts\Native.cs" />
+     <Compile Include="Assets\AudioHelm\Scripts\Note.cs" />
+     <Compile Include="Assets\AudioHelm\Scripts\NoteHandler.cs" />
+     <Compile Include="Assets\AudioHelm\Scripts\NoteRow.cs" />
+     <Compile Include="Assets\AudioHelm\Scripts\Sampler.cs" />
+     <Compile Include="Assets\AudioHelm\Scripts\SampleSequencer.cs" />
+     <Compile Include="Assets\AudioHelm\Scripts\Sequencer.cs" />
+     <Compile Include="Assets\AudioHelm\Scripts\Utils.cs" />
      <Compile Include="Assets\scripts\botBehavior.cs" />
      <Compile Include="Assets\scripts\BotData.cs" />
      <Compile Include="Assets\scripts\button3sound.cs" />
      <Compile Include="Assets\scripts\buttonSound.cs" />
+     <Compile Include="Assets\scripts\KeyboardReader.cs" />
      <Compile Include="Assets\scripts\SerialReader.cs" />
      <Compile Include="Assets\scripts\TouchData.cs" />
- <Reference Include="Vuforia.UnityExtensions.Editor">
- <HintPath>C:/Program Files/Unity/Editor/Data/PlaybackEngines/VuforiaSupport/Managed/Editor/Vuforia.UnityExtensions.Editor.dll</HintPath>
- </Reference>
- <Reference Include="Vuforia.UnityExtensions">
- <HintPath>C:/Program Files/Unity/Editor/Data/PlaybackEngines/VuforiaSupport/Managed/Runtime/Vuforia.UnityExtensions.dll</HintPath>
- </Reference>
+     <Compile Include="Assets\scripts\TouchTarget.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
@@ -126,26 +160,29 @@
  <Reference Include="UnityEditor.WindowsStandalone.Extensions">
  <HintPath>C:/Program Files/Unity/Editor/Data/PlaybackEngines/windowsstandalonesupport/UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
  </Reference>
+ <Reference Include="Sanford.Multimedia.Midi">
+ <HintPath>C:/Users/capage/Documents/GitHub/bot_party/gameUpdate_2/gameUpdate/Assets/AudioHelm/Plugins/Sanford.Multimedia.Midi.dll</HintPath>
+ </Reference>
  <Reference Include="UnityEngine.Advertisements">
- <HintPath>C:/Users/Phoenix/AppData/LocalLow/Unity/cache/packages/packages.unity.com/com.unity.ads@2.0.3/UnityEngine.Advertisements.dll</HintPath>
+ <HintPath>C:/Users/capage/AppData/LocalLow/Unity/cache/packages/packages.unity.com/com.unity.ads@2.0.3/UnityEngine.Advertisements.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.Advertisements">
- <HintPath>C:/Users/Phoenix/AppData/LocalLow/Unity/cache/packages/packages.unity.com/com.unity.ads@2.0.3/Editor/UnityEditor.Advertisements.dll</HintPath>
+ <HintPath>C:/Users/capage/AppData/LocalLow/Unity/cache/packages/packages.unity.com/com.unity.ads@2.0.3/Editor/UnityEditor.Advertisements.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.Analytics">
- <HintPath>C:/Users/Phoenix/AppData/LocalLow/Unity/cache/packages/packages.unity.com/com.unity.analytics@2.0.13/UnityEngine.Analytics.dll</HintPath>
+ <HintPath>C:/Users/capage/AppData/LocalLow/Unity/cache/packages/packages.unity.com/com.unity.analytics@2.0.13/UnityEngine.Analytics.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.Analytics">
- <HintPath>C:/Users/Phoenix/AppData/LocalLow/Unity/cache/packages/packages.unity.com/com.unity.analytics@2.0.13/Editor/UnityEditor.Analytics.dll</HintPath>
+ <HintPath>C:/Users/capage/AppData/LocalLow/Unity/cache/packages/packages.unity.com/com.unity.analytics@2.0.13/Editor/UnityEditor.Analytics.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.Purchasing">
- <HintPath>C:/Users/Phoenix/AppData/LocalLow/Unity/cache/packages/packages.unity.com/com.unity.purchasing@0.0.19/UnityEngine.Purchasing.dll</HintPath>
+ <HintPath>C:/Users/capage/AppData/LocalLow/Unity/cache/packages/packages.unity.com/com.unity.purchasing@0.0.19/UnityEngine.Purchasing.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.Purchasing">
- <HintPath>C:/Users/Phoenix/AppData/LocalLow/Unity/cache/packages/packages.unity.com/com.unity.purchasing@0.0.19/Editor/UnityEditor.Purchasing.dll</HintPath>
+ <HintPath>C:/Users/capage/AppData/LocalLow/Unity/cache/packages/packages.unity.com/com.unity.purchasing@0.0.19/Editor/UnityEditor.Purchasing.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.StandardEvents">
- <HintPath>C:/Users/Phoenix/AppData/LocalLow/Unity/cache/packages/packages.unity.com/com.unity.standardevents@1.0.10/UnityEngine.StandardEvents.dll</HintPath>
+ <HintPath>C:/Users/capage/AppData/LocalLow/Unity/cache/packages/packages.unity.com/com.unity.standardevents@1.0.10/UnityEngine.StandardEvents.dll</HintPath>
  </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
