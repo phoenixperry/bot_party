@@ -259,6 +259,10 @@ void loop(void)
     doThing(IMU_1, &mag1, comp_x_1, comp_y_1, comp_z_1, "botOne", led_1, btn_1);  
     doThing(IMU_2, &mag2, comp_x_2, comp_y_2, comp_z_2, "botTwo", led_2, btn_2);
     doThing(IMU_3, &mag3, comp_x_3, comp_y_3, comp_z_3, "botThree", led_3, btn_3);
+
+    handleLedOne();
+    handleLedTwo();
+    handleLedThree();
        
     int ar = readTouches(box1, box2);
     
@@ -395,44 +399,164 @@ int calibrateBoxes(int box_a, int box_b){
           }
           
     return total/samples;  
-} 
+}
+// LED MODES:
+// 0 - Set to value
+// 1 - Fade on to 255
+// 2 - Fade off to 0
+int LED1_VALUE = 0;
+int LED1_MODE = 0;
+int LED1_PARAMETER = 0;
 
+int LED2_VALUE = 0;
+int LED2_MODE = 0;
+int LED2_PARAMETER = 0;
+
+int LED3_VALUE = 0;
+int LED3_MODE = 0;
+int LED3_PARAMETER = 0;
 void readSerialToLED() {
   byte data[2];
   while (Serial.available() >= 2) {
-    Serial.readBytes(data, 2);
-    int led = (int) (data[0] >> 6); // To get the first 2 bits, the LED portion.
-    int parameter = (int) data[1]; // The second portion is just an 8-bit unsigned int
-    int flags = (int) (data[0] & B00111111); // To get the flag portion minus the led portion.
-    if (flags == 32) {
-      ledOn(led, parameter);
-    } else if (flags == 16) {
-      ledOff(led, parameter);
+      Serial.readBytes(data, 2);
+      int led = (int) (data[0] >> 6); // To get the first 2 bits, the LED portion.
+      int parameter = (int) data[1]; // The second portion is just an 8-bit unsigned int
+      int flags = (int) (data[0] & B00111111); // To get the flag portion minus the led portion.
+      if (flags == 32) {
+        ledOn(led, parameter);
+      } else if (flags == 16) {
+        ledOff(led, parameter);
+      } else if (flags == 8) {
+        ledSetTo(led, parameter);
+      } else if (flags == 4) {
+        ledFadeOn(led, parameter);
+      } else if (flags == 2) {
+        ledFadeOff(led, parameter);
+      }
+      }
     }
-    }
-  }
 
-void ledOn(int led, int parameter) {
-  //Serial.print("led on: ");
-  //Serial.println(led);
+void ledFadeOn(int led, int parameter) {
   if (led == 1) {
-    analogWrite(led_1, 255);
+    LED1_MODE = 1;
+    LED1_PARAMETER = parameter;
   } else if (led == 2) {
-    analogWrite(led_2, 255);
+    LED2_MODE = 1;
+    LED2_PARAMETER = parameter;
   } else if (led == 3) {
-    analogWrite(led_3, 255);
+    LED3_MODE = 1;
+    LED3_PARAMETER = parameter;
   }
 }
 
-void ledOff(int led, int parameter) {
-  //Serial.print("led off: ");
-  //Serial.println(led);
-    if (led == 1) {
-    analogWrite(led_1, 0);
+void ledFadeOff(int led, int parameter) {
+  if (led == 1) {
+    LED1_MODE = 2;
+    LED1_PARAMETER = parameter;
   } else if (led == 2) {
-    analogWrite(led_2, 0);
+    LED2_MODE = 2;
+    LED2_PARAMETER = parameter;
   } else if (led == 3) {
-    analogWrite(led_3, 0);
+    LED3_MODE = 2;
+    LED3_PARAMETER = parameter;
   }
+}
+
+void ledSetTo(int led, int parameter) {
+  if (led == 1) {
+    LED1_VALUE = parameter;
+    LED1_MODE = 0;
+    LED1_PARAMETER = 0;
+    //analogWrite(led_1, parameter);
+  } else if (led == 2) {
+    LED2_VALUE = parameter;
+    LED2_MODE = 0;
+    LED2_PARAMETER = 0;
+    //analogWrite(led_2, parameter);
+  } else if (led == 3) {
+    LED3_VALUE = parameter;
+    LED3_MODE = 0;
+    LED3_PARAMETER = 0;
+    //analogWrite(led_3, parameter);
+  }
+}
+void ledOn(int led, int parameter) {
+  ledSetTo(led,255);
+}
+
+void ledOff(int led, int parameter) {
+  ledSetTo(led,0);
+}
+
+void handleLedOne() {
+  if (LED1_MODE == 0) {
+    // All good, just static value.
+  } else if (LED1_MODE == 1) {
+    // Fade on
+    if (LED1_PARAMETER == 0) { 
+      ledOn(1, 0);
+    } else {
+      LED1_VALUE = LED1_VALUE + ((255 - LED1_VALUE) / LED1_PARAMETER);
+      if (LED1_VALUE > 255) { LED1_VALUE = 255; }
+      LED1_PARAMETER -= 1;
+    }
+  } else if (LED1_MODE == 2) {
+     if (LED1_PARAMETER == 0) { 
+      ledOff(1, 0);
+    } else {
+      LED1_VALUE = LED1_VALUE - ((LED1_VALUE) / LED1_PARAMETER);
+      if (LED1_VALUE < 0) { LED1_VALUE = 0; }
+      LED1_PARAMETER -= 1;
+    }
+  }
+  analogWrite(led_1, LED1_VALUE);
+}
+
+void handleLedTwo() {
+if (LED2_MODE == 0) {
+    // All good, just static value.
+  } else if (LED2_MODE == 1) {
+    // Fade on
+    if (LED2_PARAMETER == 0) { 
+      ledOn(2, 0);
+    } else {
+      LED2_VALUE = LED2_VALUE + ((255 - LED2_VALUE) / LED2_PARAMETER);
+      if (LED2_VALUE > 255) { LED2_VALUE = 255; }
+      LED2_PARAMETER -= 1;
+    }
+  } else if (LED2_MODE == 2) {
+     if (LED2_PARAMETER == 0) { 
+      ledOff(2, 0);
+    } else {
+      LED2_VALUE = LED2_VALUE - ((LED2_VALUE) / LED2_PARAMETER);
+      if (LED2_VALUE < 0) { LED2_VALUE = 0; }
+      LED2_PARAMETER -= 1;
+    }
+  }
+  analogWrite(led_2, LED2_VALUE);
+}
+
+void handleLedThree() {
+if (LED3_MODE == 0) {
+    // All good, just static value.
+  } else if (LED3_MODE == 1) {
+    // Fade on
+    if (LED3_PARAMETER == 0) { 
+      ledOn(3, 0);
+    } else {
+      LED3_VALUE = LED3_VALUE + ((255 - LED3_VALUE) / LED3_PARAMETER);
+      if (LED3_VALUE > 255) { LED3_VALUE = 255; }
+      LED3_PARAMETER -= 1;
+    }
+  } else if (LED3_MODE == 2) {
+     if (LED3_PARAMETER == 0) { 
+      ledOff(3, 0);
+    } else {
+      LED3_VALUE = LED3_VALUE - ((LED3_VALUE) / LED3_PARAMETER);
+      if (LED3_VALUE < 0) { LED3_VALUE = 0; }
+      LED3_PARAMETER -= 1;
+    }
+  }
+  analogWrite(led_3, LED3_VALUE);
 }
 
