@@ -2,6 +2,11 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_LSM303_U.h>
 #define TCAADDR 0x70
+
+//console buttons 
+int menuBtn1 = 4; 
+int menuBtn2 = 7; 
+
 //data for averages 
 int avBoxes1_2=0; 
 int avBoxes1_3=0; 
@@ -25,6 +30,43 @@ bool boxes1_2;
 bool boxes1_3; 
 bool boxes2_3; 
 bool allConnected; 
+
+//pins for release !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//touches 
+//const int box1 = A0; 
+//const int box2 = A1; 
+//const int box3 = A2; 
+//
+////bot One vars 
+//int btn_1 =12;
+//int led_1 = 11;
+//int IMU_1 = 2;
+//String botOne = "botOne"; 
+//float comp_x_1 = 0;
+//float comp_y_1 = 0;
+//float comp_z_1 = 0;
+//
+////bot Two vars 
+//int btn_2 = 8;
+//int led_2 = 10;
+//int IMU_2 = 3;
+//String botTwo = "botTwo"; 
+//float comp_x_2 = 0;
+//float comp_y_2 = 0;
+//float comp_z_2 = 0;
+//
+//
+////bot Three vars 
+//int btn_3 = 2;
+//int led_3 = 9;
+//int IMU_3 = 1;
+//String botThree = "botThree"; 
+//float comp_x_3 = 0;
+//float comp_y_3 = 0;
+//float comp_z_3 = 0;
+
+
+//pins for testing!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
 //touches 
 const int box1 = A2; 
 const int box2 = A0; 
@@ -57,7 +99,7 @@ String botThree = "botThree";
 float comp_x_3 = 0;
 float comp_y_3 = 0;
 float comp_z_3 = 0;
-
+//end testing case!!!!!!!!!!!!!!!!!!!
 
 //fade code broken
 int delayTime = 100; //set different for each ( 100, 150,200)
@@ -144,6 +186,8 @@ void setup()
   pinMode(box1, INPUT_PULLUP);
   pinMode(box2, INPUT_PULLUP);
   pinMode(box3, INPUT_PULLUP);
+  pinMode(menuBtn1, INPUT_PULLUP); 
+  pinMode(menuBtn2, INPUT_PULLUP); 
   
 //  Serial.println("Hi");
 //  Serial.println("mag Test"); Serial.println("");
@@ -236,7 +280,6 @@ void doThing(int IMU, Adafruit_LSM303_Mag_Unified *mag, float &comp_x, float &co
   Serial.print(int(comp_z));
   Serial.print(" ");
   int btnVal = digitalRead(btn); 
-
   if(btnVal == 1) 
   {
     Serial.println('0'); 
@@ -247,6 +290,24 @@ void doThing(int IMU, Adafruit_LSM303_Mag_Unified *mag, float &comp_x, float &co
     if(pulse > 255 || pulse < 0) pulseSpeed = pulseSpeed * -1; 
     // (led,pulse);
     pulse = pulse + pulseSpeed; 
+  }  
+
+  /// code for reading menu btns 
+    Serial.print("menuButtons "); 
+    if(digitalRead(menuBtn1) == 1) 
+    {
+    Serial.print('0'); 
+    }else
+    {
+    Serial.print('1');
+  }  
+   Serial.print(" ");
+    if(digitalRead(menuBtn2) == 1) 
+    {
+    Serial.println('0'); 
+    }else
+    {
+    Serial.println('1');
   }  
 
 }
